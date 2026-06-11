@@ -1,0 +1,24 @@
+# React / Node
+node_modules/
+dist/
+dist-ssr/
+*.local
+.env
+.env.*
+
+# Spring Boot / Maven
+**/target/
+**/*.class
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+bin/
+
+# OS / Temporary
+.DS_Store
+Thumbs.db
+*.log
+scratch/
+temp-maven-wrapper.jar

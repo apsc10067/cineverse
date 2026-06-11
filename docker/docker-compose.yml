@@ -1,0 +1,117 @@
+version: '3.8'
+
+services:
+  # Databases
+  postgres:
+    image: postgres:14-alpine
+    container_name: cineverse-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: cineversedb
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: password
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  mongodb:
+    image: mongo:6.0
+    container_name: cineverse-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+
+  # Cache
+  redis:
+    image: redis:7.0-alpine
+    container_name: cineverse-redis
+    ports:
+      - "6379:6379"
+
+  # Message Broker
+  rabbitmq:
+    image: rabbitmq:3.11-management-alpine
+    container_name: cineverse-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672" # Management Console
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  # Application Microservices
+  auth-service:
+    build:
+      context: ../backend/auth-service
+      dockerfile: Dockerfile
+    container_name: cineverse-auth-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/cineversedb
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=password
+    depends_on:
+      - postgres
+
+  movie-service:
+    build:
+      context: ../backend/movie-service
+      dockerfile: Dockerfile
+    container_name: cineverse-movie-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/moviedb
+      - SPRING_DATA_REDIS_HOST=redis
+      - DEV_MODE=false
+    depends_on:
+      - mongodb
+      - redis
+
+  review-service:
+    build:
+      context: ../backend/review-service
+      dockerfile: Dockerfile
+    container_name: cineverse-review-service
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/cineversedb
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_RABBITMQ_HOST=rabbitmq
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  gateway:
+    build:
+      context: ../backend/gateway
+      dockerfile: Dockerfile
+    container_name: cineverse-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - ROUTE_AUTH_URL=http://auth-service:8081
+      - ROUTE_MOVIE_URL=http://movie-service:8082
+      - ROUTE_REVIEW_URL=http://review-service:8083
+    depends_on:
+      - auth-service
+      - movie-service
+      - review-service
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: cineverse-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - gateway
+
+volumes:
+  pgdata:
+  mongodata:
