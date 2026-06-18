@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Film, User, LogOut, LogIn, MapPin } from 'lucide-react';
 import './Navbar.css';

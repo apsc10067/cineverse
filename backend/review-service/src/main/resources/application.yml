@@ -4,6 +4,14 @@ server:
 spring:
   application:
     name: review-service
+  profiles:
+    active: dev
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
   datasource:
     url: jdbc:h2:mem:reviewdb;DB_CLOSE_DELAY=-1
     username: sa
@@ -18,9 +26,25 @@ spring:
     console:
       enabled: true
       path: /h2-console
-  rabbitmq:
-    host: localhost
-    port: 5672
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:postgresql://postgres:5432/cineversedb
+    username: sa
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  rabbitmq:
+    host: rabbitmq
+    port: 5672

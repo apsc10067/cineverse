@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Film, AlertCircle, MapPin, Globe } from 'lucide-react';
 import MovieCard from '../components/MovieCard';
 import './Home.css';

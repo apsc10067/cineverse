@@ -4,16 +4,33 @@ server:
 spring:
   application:
     name: movie-service
+  profiles:
+    active: dev
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
   data:
     mongodb:
       uri: mongodb://localhost:27017/moviedb
-    redis:
-      host: localhost
-      port: 6379
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
-
-# For local development with no DB running
 dev:
   mode: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  data:
+    mongodb:
+      uri: mongodb://mongodb:27017/moviedb
+    redis:
+      host: redis
+      port: 6379
+dev:
+  mode: false

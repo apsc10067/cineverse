@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Star, MessageSquarePlus, MessageSquare } from 'lucide-react';
 import './ReviewSection.css';
 
@@ -14,6 +14,7 @@ function ReviewSection({ movieId }) {
   // Load reviews
   useEffect(() => {
     fetchReviews();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [movieId]);
 
   const fetchReviews = async () => {

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Star, Clock } from 'lucide-react';
 import './MovieCard.css';

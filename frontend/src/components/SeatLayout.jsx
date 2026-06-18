@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Armchair, CheckCircle, Ticket, Plus, Minus, ShoppingBag, CreditCard, ChevronRight } from 'lucide-react';
 import './SeatLayout.css';

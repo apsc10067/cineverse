@@ -14,14 +14,14 @@ spring:
             allowedHeaders: "*"
       routes:
         - id: auth-service
-          uri: http://localhost:8081
+          uri: ${ROUTE_AUTH_URL:http://localhost:8081}
           predicates:
             - Path=/api/auth/**
         - id: movie-service
-          uri: http://localhost:8082
+          uri: ${ROUTE_MOVIE_URL:http://localhost:8082}
           predicates:
             - Path=/api/movies/**
         - id: review-service
-          uri: http://localhost:8083
+          uri: ${ROUTE_REVIEW_URL:http://localhost:8083}
           predicates:
             - Path=/api/reviews/**
